@@ -1,7 +1,7 @@
 //imports
 import express from 'express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import connectDB from './config/db.mjs';
 
 //Setup
 const app = express();
@@ -9,6 +9,8 @@ dotenv.config();
 let PORT = process.env.PORT || 3001;
 
 //DB Connection
+connectDB();
+
 
 //Middleware
 app.use(express.json())
