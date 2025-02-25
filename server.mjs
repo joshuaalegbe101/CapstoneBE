@@ -8,6 +8,8 @@ const app = express();
 dotenv.config();
 let PORT = process.env.PORT || 3001;
 
+//DB Connection
+
 //Middleware
 app.use(express.json())
 
