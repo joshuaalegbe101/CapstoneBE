@@ -1,21 +1,8 @@
-UserSchema {
-	name:
-	email:
-	password
-}
+const mongoose = require("mongoose");
 
-TransactionSchema {
-	userId,
-	type,
-	cateogory,
-	amount,
-	date,
-	note,
-}
-
-BudgetSchema {
-	userID,
-	limit,
-	startDate,
-	endDate,
-}
+const UserSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    createdAt: { type: Date, default: Date.new }
+})
