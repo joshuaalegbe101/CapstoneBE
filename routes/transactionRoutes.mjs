@@ -10,7 +10,7 @@ router.get("/:userId", async (req, res) => {
 
         res.json(transactions);
     } catch (err) {
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({  message: "Server error", err: err.message   });
     }
 });
 
@@ -28,7 +28,7 @@ router.post("/", async (req, res) => {
 
         res.status(201).json(newTransaction);
     }   catch (err) {
-            res.status(500).json({ message: "Server error" });
+            res.status(500).json({  message: "Server error", err: err.message   });
     }
 });
 
@@ -51,7 +51,7 @@ router.put("/:id", async (req, res) => {
 
         res.json(updatedTransaction);
     }   catch(err) {
-            res.status(500).json({ message: "Server error "});
+            res.status(500).json({  message: "Server error", err: err.message  });
     }
 });
 

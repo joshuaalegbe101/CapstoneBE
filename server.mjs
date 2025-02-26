@@ -10,7 +10,7 @@ import budgetRoutes from './routes/budgetRoutes.mjs'
 //Setup
 const app = express();
 dotenv.config();
-let PORT = process.env.PORT || 3001;
+let PORT = process.env.PORT;
 
 //DB Connection
 connectDB();
@@ -23,7 +23,7 @@ app.use(express.json())
 //Routes
 app.use("/api/users", userRoutes);
 app.use("/api/transactions", transactionRoutes);
-
+app.use("/api/budgets", budgetRoutes);
 
 
 //Listener
