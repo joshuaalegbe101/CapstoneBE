@@ -21,23 +21,35 @@ router.get("/:id", async (req, res) => {
     if (!budget) return res.status(404).json({ message: "Budget not found" });
     res.json(budget);
 
-  } catch (error) {
-        res.status(500).json({ message: "Error fetching budget", error });
+  } catch (err) {
+        res.status(500).json({ message: "Server error - Budget", err: err.message });
   }
 });
 
 //Create Budget
 router.post("/", async (req, res) => {
-  try {
-    const { userId, name, amount } = req.body;
-    const newBudget = new Budget({ userId, name, amount });
-    await newBudget.save();
-    res.status(201).json(newBudget);
-
-  } catch (error) {
-        res.status(500).json({ message: "Error creating budget", error });
-  }
-});
+    try {
+        const { userId, category, limit, startDate, endDate } = req.body;
+    
+        // Validate required fields
+        if (!userId || !category || !limit || !startDate || !endDate) {
+          return res.status(400).json({ message: "All fields are required" });
+        }
+    
+        // Ensure startDate is before endDate
+        if (new Date(startDate) >= new Date(endDate)) {
+          return res.status(400).json({ message: "startDate must be before endDate" });
+        }
+    
+        const newBudget = new Budget({ userId, category, limit, startDate, endDate });
+        await newBudget.save();
+    
+        res.status(201).json(newBudget);
+      } catch (err) {
+        console.error("Error creating budget:", error);
+        res.status(500).json({ message: "Server Error", err: err.message });
+      }
+    });
 
 //Update Budget
 router.put("/:id", async (req, res) => {
@@ -46,8 +58,8 @@ router.put("/:id", async (req, res) => {
     if (!updatedBudget) return res.status(404).json({ message: "Budget not found" });
     res.json(updatedBudget);
 
-  } catch (error) {
-        res.status(500).json({ message: "Error updating budget", error });
+  } catch (err) {
+        res.status(500).json({ message: "Server error - Budget", err: err.message });
   }
 });
 
@@ -57,9 +69,9 @@ router.delete("/:id", async (req, res) => {
     const deletedBudget = await Budget.findByIdAndDelete(req.params.id);
     if (!deletedBudget) return res.status(404).json({ message: "Budget not found" });
     res.json({ message: "Budget deleted successfully" });
-    
-  } catch (error) {
-        res.status(500).json({ message: "Error deleting budget", error });
+
+  } catch (err) {
+        res.status(500).json({ message: "Server error - Budget", err: err.message });
   }
 });
 
