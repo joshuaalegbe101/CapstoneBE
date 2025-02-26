@@ -14,11 +14,57 @@ router.get("/:userId", async (req, res) => {
 });
 
 //Post Transaction
-router.post("/", async (req, res))
+router.post("/", async (req, res) => {
+    try {
+        const {userId, type, category, amount, note } = req.body;
+
+        if(!userId || !type || !category || !amount) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const newTransaction = new Transaction({ userId, type, category, amount, note });
+        await newTransaction.save();
+
+        res.status(201).json(newTransaction);
+    }   catch (err) {
+            res.status(500).json({ message: "Server error" });
+    }
+});
+
+
 
 //Update Transaction
-router.put("/:userId")
+router.put("/:id", async (req, res) => {
+    try {
+        const { type, category, amount, note } = req.body;
+
+        const updatedTransaction = await Transaction.findByIdAndUpdate(
+            req.params.id,
+            { type, category, amount, note },
+            { new: true }
+        );
+
+        if (!updatedTransaction) {
+            return res.status(404).json({ message: "Transaction not found" });
+        }
+
+        res.json(updatedTransaction);
+    }   catch(err) {
+            res.status(500).json({ message: "Server error "});
+    }
+});
 
 
 //Delete Transaction
-router.delete("/:userId", async (req, res))
+router.delete("/:userId", async (req, res) => {
+    try {
+        const deletedTransaction = await Transaction.findByIdAndDelete(req.params.id);
+
+        if(!deletedTransaction) {
+            return res.status(404).json({ mesage: "Transaction not found" });
+        }
+        res.json({ message: "Transaction deleted successfully" });
+    }   catch (err) {
+        res.status(500).json({ message: "Server error" });
+    }
+})
