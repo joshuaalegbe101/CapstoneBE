@@ -2,6 +2,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/db.mjs';
+import userRoutes from './routes/userRoutes.mjs';
+import transactionRoutes from './routes/transactionRoutes.mjs';
 
 //Setup
 const app = express();
@@ -16,7 +18,8 @@ connectDB();
 app.use(express.json())
 
 //Routes
-
+app.use("/api/users", userRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 
 

@@ -1,4 +1,5 @@
 import express from 'express';
+import Transaction from '../models/transactions.mjs';
 
 const router = express.Router();
 
@@ -68,3 +69,5 @@ router.delete("/:userId", async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 })
+
+export default router;

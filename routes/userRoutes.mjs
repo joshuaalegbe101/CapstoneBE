@@ -1,6 +1,6 @@
 import express from 'express'
 import bcrypt from 'bcryptjs';
-import User from '../models/User.mjs';
+import User from '../models/user.mjs';
 
 const router = express.Router();
 
@@ -22,4 +22,6 @@ router.post('/register', async(req, res) => {
     }   catch(err) {
         res.status(500).json({ message: "Server error" });
     }
-})
+});
+
+export default router;
