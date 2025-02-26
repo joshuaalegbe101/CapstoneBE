@@ -1,9 +1,11 @@
 //imports
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import connectDB from './config/db.mjs';
 import userRoutes from './routes/userRoutes.mjs';
 import transactionRoutes from './routes/transactionRoutes.mjs';
+import budgetRoutes from './routes/budgetRoutes.mjs'
 
 //Setup
 const app = express();
@@ -16,6 +18,7 @@ connectDB();
 
 //Middleware
 app.use(express.json())
+//app.use(cors({ origin: "http://localhost:3000" }));
 
 //Routes
 app.use("/api/users", userRoutes);
