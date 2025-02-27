@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.mjs'
 import transactionRoutes from './routes/transactionRoutes.mjs';
 import budgetRoutes from './routes/budgetRoutes.mjs'
 
+
 //Setup
 const app = express();
 dotenv.config();

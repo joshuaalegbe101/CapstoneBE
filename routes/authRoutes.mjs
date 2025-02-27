@@ -31,30 +31,32 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// User Login
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-    if (!process.env.JWT_SECRET) {
-      return res.status(500).json({ message: "Server error: JWT_SECRET is not set in environment variables" });
+    if (!user) {
+      console.log("User not found");
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Find user
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid email or password" });
+    const isMatch = await bcrypt.compare(String(password), user.password);
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
 
-    // Generate JWT token
+    if (!isMatch) {
+      console.log("Password does not match");
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-
     res.json({ token, userId: user._id });
+
   } catch (error) {
+    console.error("Login Error:", error); // Log errors
     res.status(500).json({ message: "Internal Server Error", error: error.message });
   }
 });
+
 
 export default router;
