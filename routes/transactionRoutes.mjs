@@ -1,46 +1,51 @@
-import express from 'express';
-import Transaction from '../models/transactions.mjs';
+import express from "express";
+import Transaction from "../models/transactions.mjs";
+import authMiddleware from "../middleware/authMiddleware.mjs";
 
 const router = express.Router();
 
-//Get Transaction
-router.get("/:userId", async (req, res) => {
+//Get Transactions
+router.get("/", authMiddleware, async (req, res) => {
     try {
-        const transactions = await Transaction.find({ userId: req.params.userId }).sort({ date: -1});
-
+        const transactions = await Transaction.find({ userId: req.userId }).sort({ date: -1 });
         res.json(transactions);
     } catch (err) {
-        res.status(500).json({  message: "Server error", err: err.message   });
+        res.status(500).json({ message: "Server error - Transaction", err: err.message });
     }
 });
 
-//Post Transaction
-router.post("/", async (req, res) => {
-    try {
-        const {userId, type, category, amount, note } = req.body;
-
-        if(!userId || !type || !category || !amount) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        const newTransaction = new Transaction({ userId, type, category, amount, note });
-        await newTransaction.save();
-
-        res.status(201).json(newTransaction);
-    }   catch (err) {
-            res.status(500).json({  message: "Server error", err: err.message   });
-    }
-});
-
-
-
-//Update Transaction
-router.put("/:id", async (req, res) => {
+//Create Transaction
+router.post("/", authMiddleware, async (req, res) => {
     try {
         const { type, category, amount, note } = req.body;
 
-        const updatedTransaction = await Transaction.findByIdAndUpdate(
-            req.params.id,
+        // Ensure required fields are provided
+        if (!type || !category || !amount) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        const newTransaction = new Transaction({ 
+            userId: req.userId, // Use authenticated user's ID
+            type, 
+            category, 
+            amount, 
+            note 
+        });
+
+        await newTransaction.save();
+        res.status(201).json(newTransaction);
+    } catch (err) {
+        res.status(500).json({ message: "Server error - Transaction", err: err.message });
+    }
+});
+
+//Update Transaction
+router.put("/:id", authMiddleware, async (req, res) => {
+    try {
+        const { type, category, amount, note } = req.body;
+
+        const updatedTransaction = await Transaction.findOneAndUpdate(
+            { _id: req.params.id, userId: req.userId }, // Ensure user can only edit their own transactions
             { type, category, amount, note },
             { new: true }
         );
@@ -50,24 +55,27 @@ router.put("/:id", async (req, res) => {
         }
 
         res.json(updatedTransaction);
-    }   catch(err) {
-            res.status(500).json({  message: "Server error", err: err.message  });
+    } catch (err) {
+        res.status(500).json({ message: "Server error - Transaction", err: err.message });
     }
 });
 
-
 //Delete Transaction
-router.delete("/:userId", async (req, res) => {
+router.delete("/:id", authMiddleware, async (req, res) => {
     try {
-        const deletedTransaction = await Transaction.findByIdAndDelete(req.params.id);
+        const deletedTransaction = await Transaction.findOneAndDelete({ 
+            _id: req.params.id, 
+            userId: req.userId 
+        });
 
-        if(!deletedTransaction) {
-            return res.status(404).json({ mesage: "Transaction not found" });
+        if (!deletedTransaction) {
+            return res.status(404).json({ message: "Transaction not found" });
         }
+
         res.json({ message: "Transaction deleted successfully" });
-    }   catch (err) {
-        res.status(500).json({ message: "Server error" });
+    } catch (err) {
+        res.status(500).json({ message: "Server error - Transaction", err: err.message });
     }
-})
+});
 
 export default router;
