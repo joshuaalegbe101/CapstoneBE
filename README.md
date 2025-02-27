@@ -11,6 +11,7 @@ The backend provides a **RESTful API** for handling **user authentication, trans
 ## Table of Contents
 * [Technologies Used](#technologiesused)
 * [Features](#features)
+* [Wireframe Images](#wireframes)
 * [API Endpoints](#api)
 * [Design](#design)
 * [Project Next Steps](#nextsteps)
