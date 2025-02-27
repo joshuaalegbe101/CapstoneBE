@@ -18,10 +18,13 @@ connectDB();
 
 //Middleware
 app.use(express.json())
-//app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ 
+    origin: "http://localhost:5173",
+    credentials: true 
+}));
 
 //Routes
-app.use("/api/users", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/budgets", budgetRoutes);
 
