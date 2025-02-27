@@ -32,6 +32,11 @@ The backend provides:
 - **JWT-based authentication for security**
 - **Data validation and error handling**
 
+
+## <a name="wireframes"></a>Wireframe Images
+* Here is an early wireframe layout:
+<img src="wireframe.png" alt="Wireframe of Expense Tracker"/>
+
 ## <a name="api"></a>API Endpoints
 | Method | Endpoint               | Description              | Auth Required |
 |--------|------------------------|--------------------------|--------------|
